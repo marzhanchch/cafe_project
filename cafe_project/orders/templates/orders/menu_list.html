@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список блюд</title>
+</head>
+<body>
+    <h1>Список блюд</h1>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Категория</th>
+            <th>Доступность</th>
+            <th>Действия</th>
+        </tr>
+        {% for item in menu_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.get_category_display }}</td>
+            <td>{{ item.get_available_display }}</td>
+            <td>
+                <a href="{% url 'menu_edit' item.id %}">Редактировать</a>
+                <a href="{% url 'menu_delete' item.id %}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'menu_add' %}">Добавить блюдо</a>
+</body>
+</html>

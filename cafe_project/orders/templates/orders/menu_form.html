@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Форма блюда</title>
+</head>
+<body>
+    <h1>{% if form.instance.pk %}Редактировать{% else %}Добавить{% endif %} блюдо</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <a href="{% url 'menu_list' %}">Назад к списку блюд</a>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список заказов</title>
+</head>
+<body>
+    <h1>Список заказов</h1>
+    <table>
+        <tr>
+            <th>Клиент</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.customer.name }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>
+                <a href="{% url 'order_edit' order.id %}">Редактировать</a>
+                <a href="{% url 'order_delete' order.id %}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'order_add' %}">Добавить заказ</a>
+</body>
+</html>
