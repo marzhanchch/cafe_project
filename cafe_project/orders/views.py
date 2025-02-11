@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django import template
 from .models import Customer, MenuItem, Order
 from .forms import CustomerForm, MenuItemForm, OrderForm
-
+from django.urls import path
 
 
 class CustomerListView(TemplateView):
@@ -22,6 +22,13 @@ class CustomerFormView(FormView):
     template_name = "orders/customer_form.html"
     form_class = CustomerForm
     success_url = reverse_lazy('customer_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.kwargs.get('pk'):  # Если есть параметр pk (для редактирования)
+            customer = get_object_or_404(Customer, pk=self.kwargs['pk'])
+            initial.update({'name': customer.name, 'email': customer.email})  # добавь другие поля
+        return initial
 
     def form_valid(self, form):
         form.save()
@@ -78,6 +85,15 @@ class OrderDeleteView(DeleteView):
     template_name = "orders/order_confirm_delete.html"
 
 
+class MenuByCategoryView(TemplateView):
+    template_name = "orders/menu_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = kwargs.get('category')
+        context['menu_items'] = MenuItem.objects.filter(category=category)
+        return context
+
 
 register = template.Library()
 
@@ -106,5 +122,6 @@ urlpatterns = [
     path("orders/edit/<int:pk>/", OrderFormView.as_view(), name="order_edit"),
     path("orders/delete/<int:pk>/", OrderDeleteView.as_view(), name="order_delete"),
     path("orders/status/<str:status>/", OrderListView.as_view(), name="orders_by_status"),
-    path("menu-items/category/<str:category>/", OrderListView.as_view(), name="menu_by_category"),
+    path("menu-items/category/<str:category>/", MenuByCategoryView.as_view(), name="menu_by_category"),
 ]
+
